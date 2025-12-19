@@ -1,6 +1,6 @@
 let API_BASE = null;
 
-// Pobierz URL backendu dynamicznie
+// Pobierz URL backendu dynamicznie z Apps Script
 async function loadApiBase() {
   const res = await fetch("https://script.google.com/macros/s/AKfycbxEbqQ0p4JmEJ1zizux3FRjaRjIs0dd1fVgbw1nhUxjUBC9mYHcff7tMjiqfcF5q_PLQg/exec?path=system/webapp-url");
   const data = await res.json();
