@@ -1,4 +1,4 @@
-﻿const API_BASE = "https://script.google.com/macros/s/AKfycbzCj0gC3aTESuB5xC5j9nNvQOYQQGpTTVOz1dimoGzAeRIKh2RpzzbrzjV9N-RA-83iGA/exec";
+﻿const API_BASE = "https://script.google.com/macros/s/AKfycbxjc50T_4clK45VIUSRwVDF2qgbLgTyxxV6XCwrid-f5ksxKb62phONplUJQWjSRewrzQ/exec";
 
 
 export const api = {
@@ -12,4 +12,5 @@ export const api = {
       method: "POST",
       body: JSON.stringify(data)
     }).then(r => r.json())
+
 };
