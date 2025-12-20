@@ -1,75 +1,107 @@
-// =========================
-//  API CONFIG
-// =========================
+/**
+ * ============================================================
+ *  API CLIENT — CityOfGATE Frontend
+ *  Łączy frontend z backendem Google Apps Script
+ * ============================================================
+ */
+
+console.log("[API] Initializing...");
 
 let API_BASE = null;
 
-// =========================
-//  LOAD BACKEND URL
-// =========================
+/**
+ * ============================================================
+ *  1. Pobieranie URL backendu z endpointu systemowego
+ * ============================================================
+ */
 
-async function loadBackendUrl() {
-  console.log("[API] Fetching backend URL...");
+async function loadBackendURL() {
+    console.log("[API] Fetching backend URL...");
 
-  try {
-    const res = await fetch(
-      "https://script.google.com/macros/s/AKfycbz-3Fkr1ZWq2UO5ekY2J8AjsDptx8bsRRNoS-S3U7NMn8q3RD6jc60rFKaJFqliipjbRw/exec?path=system/webapp-url"
-    );
+    try {
+        const res = await fetch(
+            "https://script.google.com/macros/s/AKfycbx0TfJOOi9wGoP_50PEVPzrSZZSCMN4tvlwt-kD_0vh51qFCnYSb3qABl_i6KkeWs-Mag/exec?path=system/webapp-url"
+        );
 
-    const data = await res.json();
-    API_BASE = data.url;
+        const data = await res.json();
 
-    console.log("[API] Backend URL loaded:", API_BASE);
+        if (!data.url) {
+            console.error("[API] ERROR: Backend did not return URL:", data);
+            return;
+        }
 
-    // ✅ Powiadom moduły, że API jest gotowe
-    document.dispatchEvent(new Event("api-ready"));
+        API_BASE = data.url;
+        console.log("[API] Backend URL loaded:", API_BASE);
 
-  } catch (err) {
-    console.error("[API] ERROR loading backend URL:", err);
-  }
+    } catch (err) {
+        console.error("[API] ERROR while loading backend URL:", err);
+    }
 }
 
-// =========================
-//  GENERIC GET
-// =========================
+/**
+ * ============================================================
+ *  2. Uniwersalny GET
+ * ============================================================
+ */
 
-async function api_get(path) {
-  if (!API_BASE) {
-    console.warn("[API] GET blocked — API_BASE not ready");
-    return null;
-  }
+async function apiGET(path, params = {}) {
+    if (!API_BASE) {
+        console.warn("[API] API_BASE not ready, loading...");
+        await loadBackendURL();
+    }
 
-  const url = `${API_BASE}?path=${encodeURIComponent(path)}`;
-  console.log("[API] GET:", url);
+    const url = new URL(API_BASE);
+    url.searchParams.set("path", path);
 
-  const res = await fetch(url);
-  return await res.json();
+    for (const key in params) {
+        url.searchParams.set(key, params[key]);
+    }
+
+    console.log("[API] GET:", url.toString());
+
+    try {
+        const res = await fetch(url.toString());
+        return await res.json();
+    } catch (err) {
+        console.error("[API] GET ERROR:", err);
+        return { error: err.toString() };
+    }
 }
 
-// =========================
-//  GENERIC POST
-// =========================
+/**
+ * ============================================================
+ *  3. Uniwersalny POST
+ * ============================================================
+ */
 
-async function api_post(path, payload) {
-  if (!API_BASE) {
-    console.warn("[API] POST blocked — API_BASE not ready");
-    return null;
-  }
+async function apiPOST(path, body = {}) {
+    if (!API_BASE) {
+        console.warn("[API] API_BASE not ready, loading...");
+        await loadBackendURL();
+    }
 
-  const url = `${API_BASE}?path=${encodeURIComponent(path)}`;
-  console.log("[API] POST:", url);
+    const url = `${API_BASE}?path=${encodeURIComponent(path)}`;
 
-  const res = await fetch(url, {
-    method: "POST",
-    body: JSON.stringify(payload),
-    headers: { "Content-Type": "application/json" }
-  });
+    console.log("[API] POST:", url, "BODY:", body);
 
-  return await res.json();
+    try {
+        const res = await fetch(url, {
+            method: "POST",
+            contentType: "application/json",
+            body: JSON.stringify(body)
+        });
+
+        return await res.json();
+    } catch (err) {
+        console.error("[API] POST ERROR:", err);
+        return { error: err.toString() };
+    }
 }
 
-// =========================
-//  AUTO-INIT
-// =========================
+/**
+ * ============================================================
+ *  4. Auto-init backend URL przy starcie aplikacji
+ * ============================================================
+ */
 
-loadBackendUrl();
+loadBackendURL();
