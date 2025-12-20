@@ -20,6 +20,10 @@ async function loadBackendUrl() {
     API_BASE = data.url;
 
     console.log("[API] Backend URL loaded:", API_BASE);
+
+    // ✅ Powiadom moduły, że API jest gotowe
+    document.dispatchEvent(new Event("api-ready"));
+
   } catch (err) {
     console.error("[API] ERROR loading backend URL:", err);
   }
