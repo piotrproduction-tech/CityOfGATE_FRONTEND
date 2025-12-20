@@ -20,7 +20,6 @@ function initBudgetBank() {
     return;
   }
 
-  // ✅ tutaj dalsza logika modułu
   loadBankData();
 }
 
@@ -31,5 +30,5 @@ async function loadBankData() {
 
   console.log("[BudgetBank] Data received:", data);
 
-  // renderowanie danych...
+  // ✅ tutaj wstawisz renderowanie tabeli, salda itd.
 }
