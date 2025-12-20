@@ -1,19 +1,26 @@
 console.log("[BudgetBank] Module loaded");
 
-// ✅ Start modułu dopiero po sygnale z api.js
-document.addEventListener("api-ready", initBudgetBank);
+// ✅ Jeśli API_BASE już jest gotowe → startujemy od razu
+if (API_BASE) {
+  console.log("[BudgetBank] API_BASE already ready:", API_BASE);
+  initBudgetBank();
+} else {
+  // ✅ Jeśli nie → czekamy na event
+  document.addEventListener("api-ready", () => {
+    console.log("[BudgetBank] API_BASE ready after event:", API_BASE);
+    initBudgetBank();
+  });
+}
 
 function initBudgetBank() {
   console.log("[BudgetBank] Initializing module...");
 
   if (!API_BASE) {
-    console.warn("[BudgetBank] ERROR — API_BASE still not ready");
+    console.error("[BudgetBank] ERROR — API_BASE is missing");
     return;
   }
 
-  console.log("[BudgetBank] API_BASE ready:", API_BASE);
-
-  // ✅ tutaj wstawiasz dalszą logikę modułu
+  // ✅ tutaj dalsza logika modułu
   loadBankData();
 }
 
