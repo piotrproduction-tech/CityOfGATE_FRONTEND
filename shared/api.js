@@ -1,6 +1,3 @@
-/**
- * Dynamiczne pobieranie URL backendu
- */
 async function loadBackendUrl() {
   console.log("[API] Fetching backend URL...");
 
@@ -17,7 +14,3 @@ async function loadBackendUrl() {
     console.error("[API] ERROR loading backend URL:", err);
   }
 }
-
-// automatyczne pobranie backendu przy starcie
-loadBackendUrl();
-
