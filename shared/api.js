@@ -14,7 +14,7 @@ async function loadBackendUrl() {
 
   try {
     const res = await fetch(
-  "https://script.google.com/macros/s/AKfycbz-3Fkr1ZWq2UO5ekY2J8AjsDptx8bsRRNoS-S3U7NMn8q3RD6jc60rFKaJFqliipjbRw/exec?path=system/webapp-url"
+  "https://script.google.com/u/0/home/projects/1khD850BzXr6bEaTVWsihK2gmKEf6UFJoEaMS1_2Ej-dYLL3QhcyShoWU/exec?path=system/webapp-url"
 );
 
     const data = await res.json();
@@ -87,6 +87,7 @@ async function api_getTransactions() {
 async function api_getBalance() {
   return apiGet("budget/balance/get");
 }
+
 
 
 
