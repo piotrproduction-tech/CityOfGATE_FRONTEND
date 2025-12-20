@@ -1,3 +1,13 @@
+// =========================
+//  API CONFIG
+// =========================
+
+let API_BASE = null;
+
+// =========================
+//  LOAD BACKEND URL
+// =========================
+
 async function loadBackendUrl() {
   console.log("[API] Fetching backend URL...");
 
@@ -14,3 +24,48 @@ async function loadBackendUrl() {
     console.error("[API] ERROR loading backend URL:", err);
   }
 }
+
+// =========================
+//  GENERIC GET
+// =========================
+
+async function api_get(path) {
+  if (!API_BASE) {
+    console.warn("[API] GET blocked — API_BASE not ready");
+    return null;
+  }
+
+  const url = `${API_BASE}?path=${encodeURIComponent(path)}`;
+  console.log("[API] GET:", url);
+
+  const res = await fetch(url);
+  return await res.json();
+}
+
+// =========================
+//  GENERIC POST
+// =========================
+
+async function api_post(path, payload) {
+  if (!API_BASE) {
+    console.warn("[API] POST blocked — API_BASE not ready");
+    return null;
+  }
+
+  const url = `${API_BASE}?path=${encodeURIComponent(path)}`;
+  console.log("[API] POST:", url);
+
+  const res = await fetch(url, {
+    method: "POST",
+    body: JSON.stringify(payload),
+    headers: { "Content-Type": "application/json" }
+  });
+
+  return await res.json();
+}
+
+// =========================
+//  AUTO-INIT
+// =========================
+
+loadBackendUrl();
