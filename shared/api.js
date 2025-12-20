@@ -1,21 +1,24 @@
+/**
+ * Dynamiczne pobieranie URL backendu
+ */
 let API_BASE = null;
 
-// Pobierz URL backendu dynamicznie z Apps Script
-async function loadApiBase() {
-  const res = await fetch("https://script.google.com/macros/s/AKfycbxEbqQ0p4JmEJ1zizux3FRjaRjIs0dd1fVgbw1nhUxjUBC9mYHcff7tMjiqfcF5q_PLQg/exec?path=system/webapp-url");
-  const data = await res.json();
-  API_BASE = data.url;
+async function loadBackendUrl() {
+  console.log("[API] Fetching backend URL...");
+
+  try {
+    const res = await fetch(
+      "https://script.google.com/macros/s/AKfycbwYD60yf7_h0Ucu99-sfYGLnivbpM5jPZYKHxOMCyWAGSthFh3bDE4YqZbaajtO-KuP9Q/exec?path=system/webapp-url"
+    );
+
+    const data = await res.json();
+    API_BASE = data.url;
+
+    console.log("[API] Backend URL loaded:", API_BASE);
+  } catch (err) {
+    console.error("[API] ERROR loading backend URL:", err);
+  }
 }
 
-await loadApiBase();
-
-export const api = {
-  get: (path) =>
-    fetch(`${API_BASE}?path=${path}`).then(r => r.json()),
-
-  post: (path, data) =>
-    fetch(`${API_BASE}?path=${path}`, {
-      method: "POST",
-      body: JSON.stringify(data)
-    }).then(r => r.json())
-};
+// automatyczne pobranie backendu przy starcie
+loadBackendUrl();
