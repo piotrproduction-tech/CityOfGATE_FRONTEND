@@ -1,16 +1,40 @@
-import { api } from "../shared/api/api.js";
+console.log("[BudgetBank] Module loaded");
 
-export async function initModule() {
+// Czekamy aż API_BASE będzie gotowe
+async function waitForApi() {
+  while (!window.API_BASE) {
+    console.log("[BudgetBank] Waiting for API_BASE...");
+    await new Promise(r => setTimeout(r, 200));
+  }
+}
+
+async function initModule() {
+  console.log("[BudgetBank] Initializing module...");
+
+  await waitForApi();
   await loadBalance();
   await loadTransactions();
   setupForm();
+}
+
+async function apiGet(path) {
+  const res = await fetch(`${API_BASE}?path=${path}`);
+  return res.json();
+}
+
+async function apiPost(path, body) {
+  const res = await fetch(`${API_BASE}?path=${path}`, {
+    method: "POST",
+    body: JSON.stringify(body)
+  });
+  return res.json();
 }
 
 async function loadBalance() {
   const box = document.getElementById("balance-box");
   box.textContent = "Ładowanie...";
 
-  const data = await api.get("budget/balance");
+  const data = await apiGet("budget/balance");
   box.textContent = data.balance + " zł";
 }
 
@@ -18,7 +42,7 @@ async function loadTransactions() {
   const table = document.querySelector("#transactions-table tbody");
   table.innerHTML = "<tr><td colspan='5'>Ładowanie...</td></tr>";
 
-  const rows = await api.get("budget/transactions");
+  const rows = await apiGet("budget/transactions");
 
   table.innerHTML = "";
 
@@ -47,7 +71,7 @@ function setupForm() {
     const type = document.getElementById("type").value;
     const actor = document.getElementById("actor").value;
 
-    await api.post("budget/transactions", {
+    await apiPost("budget/transactions", {
       amount,
       type,
       actor
@@ -59,3 +83,6 @@ function setupForm() {
     form.reset();
   });
 }
+
+// Automatyczne uruchomienie modułu
+initModule();
